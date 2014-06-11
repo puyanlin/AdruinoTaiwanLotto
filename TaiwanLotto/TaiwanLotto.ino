@@ -1,4 +1,6 @@
 
+#define CRITICALVALUE  100
+
 #define PIN_0 2
 #define PIN_g 3
 #define PIN_c 4
@@ -132,25 +134,15 @@ boolean flagPickNum=false;
 int maskLightTimes=0;
 void fourStartLotto(){
   if(flagPickNum){
-//    
-//    if(time_now - time_previous > 1000){
-//      number++;
-//      time_previous += 1000;
-//      pf("number=%d\n", number);
-//    }
-//    
     setNumber(number);
   }else{
     int photocellVal = analogRead(PHOTOCELLPIN);
-    randomSeed(random());
-    
-    Serial.println(photocellVal);   
-    
-    
-    if(photocellVal>10){
+    randomSeed(photocellVal);  
+ 
+    if(photocellVal<CRITICALVALUE){
         Serial.println(photocellVal);   
         ++maskLightTimes; 
-        if(maskLightTimes==10){
+        if(maskLightTimes==50){
           flagPickNum=true;
           number=random(0000, 9999);
           return;
@@ -192,7 +184,7 @@ void bingoLotto(){
   }else{
     int photocellVal = analogRead(PHOTOCELLPIN);
     
-    if(photocellVal<800){
+    if(photocellVal<CRITICALVALUE){
         Serial.println(photocellVal);   
         ++maskLightTimes; 
         if(maskLightTimes==30){
@@ -239,6 +231,6 @@ void bingoLotto(){
 void loop() {
   
   //Serial.println(10);   
-  //fourStartLotto();
-   bingoLotto();
+  fourStartLotto();
+   //bingoLotto();
 }
