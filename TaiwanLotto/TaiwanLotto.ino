@@ -1,5 +1,5 @@
 
-#define CRITICALVALUE  100
+#define CRITICALVALUE  300
 
 #define PIN_0 2
 #define PIN_g 3
@@ -110,6 +110,15 @@ void setDarkZeroNumber(int number)
   setDigit(1, n1); delay(5);
   setDigit(2, n2); delay(5);
   setDigit(3, n3==0?10:n3); delay(5);
+}
+
+void setFIFA2014(int scoreA,int scoreB)
+{
+
+  setDigit(0, scoreA); delay(5);
+  setDigit(1, 10); delay(5);
+  setDigit(2, 10); delay(5);
+  setDigit(3, scoreB); delay(5);
 }
 
 unsigned long time_previous;
@@ -228,9 +237,63 @@ void bingoLotto(){
     
 }
 
+int teamA,teamB;
+void predictionFIFA(){
+  
+  if(flagPickNum){
+    
+    setFIFA2014(teamA,teamB);
+    
+  }else{
+    int photocellVal = analogRead(PHOTOCELLPIN);
+    Serial.println(photocellVal);  
+    if(photocellVal<CRITICALVALUE){
+        Serial.println(photocellVal);   
+        ++maskLightTimes; 
+        if(maskLightTimes==30){
+          flagPickNum=true;
+          
+         int score[160];
+         for(int i=0;i<160;i++){
+           
+           if(i>=0&&i<40)score[i]=0;
+           else if(i==40) score[i]=9;
+           else if(i>=41&&i<81) score[i]=1;
+           else if(i==81) score[i]=8;
+           else if(i>=82&&i<121) score[i]=2;
+           else if(i==121) score[i]=7;
+           else if(i>=122&&i<125) score[i]=6;
+           else if(i>=125&&i<145) score[i]=3;
+           else if(i>=145&&i<149) score[i]=5;
+           else score[i]=4;
+           
+         }
+          randomSeed(analogRead(PHOTOCELLPIN));
+          teamA=score[random(0, 159)];
+          
+          randomSeed(analogRead(PHOTOCELLPIN));
+          teamB=score[random(0, 159)];
+          return;
+        }
+        setNumber(random(1111, 9999));
+        
+    }
+    else{
+        if(maskLightTimes<=0) 
+           setNumber(0);
+        else
+          setNumber(random(1111, 9999));
+    }
+    
+  } 
+    
+}
+
+
 void loop() {
   
   //Serial.println(10);   
-  fourStartLotto();
+  //fourStartLotto();
    //bingoLotto();
+   predictionFIFA();
 }
