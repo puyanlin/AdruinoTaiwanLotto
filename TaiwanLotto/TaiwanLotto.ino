@@ -146,7 +146,7 @@ void fourStartLotto(){
     setNumber(number);
   }else{
     int photocellVal = analogRead(PHOTOCELLPIN);
-    randomSeed(photocellVal);  
+     randomSeed(analogRead(PHOTOCELLPIN)*random(0,maskLightTimes*10));
  
     if(photocellVal<CRITICALVALUE){
         Serial.println(photocellVal);   
@@ -208,7 +208,7 @@ void bingoLotto(){
           }
           
           for(int times=0;times<RESULTCOUNT;times++){
-            randomSeed(random());
+            randomSeed(analogRead(PHOTOCELLPIN)*random());
             int index=random(0,BINGONUMCOUNT-times);
             arrayResult[times]=arrayBingoNum[index];
             
@@ -268,10 +268,10 @@ void predictionFIFA(){
            else score[i]=4;
            
          }
-          randomSeed(analogRead(PHOTOCELLPIN));
+          randomSeed(analogRead(PHOTOCELLPIN)*random(0,80));
           teamA=score[random(0, 159)];
           
-          randomSeed(analogRead(PHOTOCELLPIN));
+          randomSeed(analogRead(PHOTOCELLPIN)*random(81,160));
           teamB=score[random(0, 159)];
           return;
         }
@@ -293,7 +293,7 @@ void predictionFIFA(){
 void loop() {
   
   //Serial.println(10);   
-  //fourStartLotto();
-   //bingoLotto();
-   predictionFIFA();
+  fourStartLotto();
+  //bingoLotto();
+   //predictionFIFA();
 }
